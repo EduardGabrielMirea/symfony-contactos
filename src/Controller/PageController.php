@@ -2,10 +2,11 @@
 
 namespace App\Controller;
 
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
+use App\Entity\Contacto;
 class PageController extends AbstractController
 {
     private $contactos = [
@@ -21,6 +22,41 @@ class PageController extends AbstractController
         9 => ["nombre" => "Nora Jover", "telefono" => "54565859", "email" => "norajover@ieselcaminas.org"]
 
     ];
+
+    #[Route('/contacto/get/{id}', name: 'get')]
+    public function getId(int $id, ManagerRegistry $doctrine){
+        $repositorio = $doctrine->getRepository(Contacto::class);
+        $contacto = $repositorio->find($id);
+
+        return $this->render('contacto/get.html.twig',['contacto'=>$contacto]);
+    }
+/*hacer el flush*/
+
+    #[Route('/contacto/update/{id}/{nombre}', name: 'update')]
+    public function update(int $id,string $nombre ,ManagerRegistry $doctrine){
+        $repositorio = $doctrine->getRepository(Contacto::class);
+        $contacto = $repositorio->find($id);
+        $contacto->setNombre($nombre);
+        $entityManager = $doctrine->getManager();
+        $entityManager->persist($contacto);
+        $entityManager->flush();
+
+
+        return $this->render('ficha_contacto/get.html.twig',['contacto'=>$contacto]);
+    }
+
+    #[Route('/contacto/delete/{id}', name: 'delete')]
+    public function delete(int $id,ManagerRegistry $doctrine)
+    {
+        $repositorio = $doctrine->getRepository(Contacto::class);
+        $contacto = $repositorio->find($id);
+        $entityManager = $doctrine->getManager();
+        $entityManager->remove($contacto);
+        $entityManager->flush();
+
+        return new Response("Se ha borrado");
+    }
+
     #[Route('/page', name: 'app_page')]
     public function index(): Response
     {
@@ -32,24 +68,31 @@ class PageController extends AbstractController
     #[Route('/', name: 'inicio')]
     public function inicio(): Response
     {
-        return new Response("Bienvenido a la web de contactos");
+        return $this->render('inicio.html.twig');
     }
     /*
      * http://127.0.0.1:8080/contacto/1*/
     #[Route('/contacto/{codigo}', name: 'ficha_contacto')]
     public function ficha($codigo): Response
     {
-        $resultado = ($this->contactos[$codigo] ?? null);
-        if($resultado){
-            $html = "<ul>";
-                $html .= "<li>" . $codigo . "</li>";
-                $html .= "<li>" . $resultado['nombre'] . "</li>";
-                $html .= "<li>" . $resultado['telefono'] . "</li>";
-                $html .= "<li>" . $resultado['email'] . "</li>";
-            $html .= "<ul>";
-            return new Response("<html><body> $html </body></html>");
-        }
-        return new Response("<html><body>Contacto $codigo no encontrado</body></html>");
+        $contacto = ($this->contactos[$codigo] ?? null);
+
+        return $this->render('ficha_contacto.html.twig', ['contacto' => $contacto]);
     }
+
+    #[Route('/contacto/buscar/{texto}', name: 'buscar_contacto')]
+    public function buscar(String $texto): Response
+    {
+        $resultado = array_filter($this->contactos, function ($contacto) use ($texto) {
+            // Convertimos el texto a minúsculas para una búsqueda insensible a mayúsculas
+            $texto = strtolower($texto);
+            return (strpos(strtolower($contacto['nombre']), $texto) !== false ||
+                strpos(strtolower($contacto['telefono']), $texto) !== false);
+        });
+
+        return $this->render('lista_contactos.html.twig', ['contactos' => $resultado]);
+    }
+    /* FALTA INSERTAL CONTACTOS*/
+
 }
 

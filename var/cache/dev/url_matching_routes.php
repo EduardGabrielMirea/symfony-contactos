@@ -19,33 +19,43 @@ return [
     ],
     [ // $regexpList
         0 => '{^(?'
-                .'|/contacto/([^/]++)(*:25)'
+                .'|/contacto/(?'
+                    .'|get/([^/]++)(?'
+                        .'|(*:35)'
+                        .'|/([^/]++)(*:51)'
+                    .')'
+                    .'|([^/]++)(*:67)'
+                    .'|buscar/([^/]++)(*:89)'
+                .')'
                 .'|/_(?'
-                    .'|error/(\\d+)(?:\\.([^/]++))?(*:63)'
-                    .'|wdt/([^/]++)(*:82)'
+                    .'|error/(\\d+)(?:\\.([^/]++))?(*:128)'
+                    .'|wdt/([^/]++)(*:148)'
                     .'|profiler/([^/]++)(?'
                         .'|/(?'
-                            .'|search/results(*:127)'
-                            .'|router(*:141)'
+                            .'|search/results(*:194)'
+                            .'|router(*:208)'
                             .'|exception(?'
-                                .'|(*:161)'
-                                .'|\\.css(*:174)'
+                                .'|(*:228)'
+                                .'|\\.css(*:241)'
                             .')'
                         .')'
-                        .'|(*:184)'
+                        .'|(*:251)'
                     .')'
                 .')'
             .')/?$}sDu',
     ],
     [ // $dynamicRoutes
-        25 => [[['_route' => 'ficha_contacto', '_controller' => 'App\\Controller\\PageController::ficha'], ['codigo'], null, null, false, true, null]],
-        63 => [[['_route' => '_preview_error', '_controller' => 'error_controller::preview', '_format' => 'html'], ['code', '_format'], null, null, false, true, null]],
-        82 => [[['_route' => '_wdt', '_controller' => 'web_profiler.controller.profiler::toolbarAction'], ['token'], null, null, false, true, null]],
-        127 => [[['_route' => '_profiler_search_results', '_controller' => 'web_profiler.controller.profiler::searchResultsAction'], ['token'], null, null, false, false, null]],
-        141 => [[['_route' => '_profiler_router', '_controller' => 'web_profiler.controller.router::panelAction'], ['token'], null, null, false, false, null]],
-        161 => [[['_route' => '_profiler_exception', '_controller' => 'web_profiler.controller.exception_panel::body'], ['token'], null, null, false, false, null]],
-        174 => [[['_route' => '_profiler_exception_css', '_controller' => 'web_profiler.controller.exception_panel::stylesheet'], ['token'], null, null, false, false, null]],
-        184 => [
+        35 => [[['_route' => 'get', '_controller' => 'App\\Controller\\PageController::getId'], ['id'], null, null, false, true, null]],
+        51 => [[['_route' => 'update', '_controller' => 'App\\Controller\\PageController::update'], ['id', 'nombre'], null, null, false, true, null]],
+        67 => [[['_route' => 'ficha_contacto', '_controller' => 'App\\Controller\\PageController::ficha'], ['codigo'], null, null, false, true, null]],
+        89 => [[['_route' => 'buscar_contacto', '_controller' => 'App\\Controller\\PageController::buscar'], ['texto'], null, null, false, true, null]],
+        128 => [[['_route' => '_preview_error', '_controller' => 'error_controller::preview', '_format' => 'html'], ['code', '_format'], null, null, false, true, null]],
+        148 => [[['_route' => '_wdt', '_controller' => 'web_profiler.controller.profiler::toolbarAction'], ['token'], null, null, false, true, null]],
+        194 => [[['_route' => '_profiler_search_results', '_controller' => 'web_profiler.controller.profiler::searchResultsAction'], ['token'], null, null, false, false, null]],
+        208 => [[['_route' => '_profiler_router', '_controller' => 'web_profiler.controller.router::panelAction'], ['token'], null, null, false, false, null]],
+        228 => [[['_route' => '_profiler_exception', '_controller' => 'web_profiler.controller.exception_panel::body'], ['token'], null, null, false, false, null]],
+        241 => [[['_route' => '_profiler_exception_css', '_controller' => 'web_profiler.controller.exception_panel::stylesheet'], ['token'], null, null, false, false, null]],
+        251 => [
             [['_route' => '_profiler', '_controller' => 'web_profiler.controller.profiler::panelAction'], ['token'], null, null, false, true, null],
             [null, null, null, null, false, false, 0],
         ],
