@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}Contactos{% endblock %}</title>
+</head>
+<body>
+{% block body %}
+    <h1>Ficha del contacto</h1>
+    {% if contacto %}
+        {{ include('partials/datos_contacto.html.twig', {'contacto': contacto}) }}
+    {% else %}
+        <h4>Contacto no encontrado</h4>
+    {% endif %}
+{% endblock %}
+</body>
+</html>
